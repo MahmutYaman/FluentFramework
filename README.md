@@ -1,3 +1,5 @@
+It is a framework for nHibernate which uses FluentFramework. 
+ 
  1. Create a class implements from `IConnectionDescriptive` for return
     connection string and provider.
  2. Create entities as inherits from `Entity<YourConnectionDescriptive>`
