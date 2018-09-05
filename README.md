@@ -55,7 +55,7 @@ public void AddBook(string bookName, User user)
 }
 ```
 
-Examine test project to see how it works.
+Examine the project to see what you can do more.
 
 ## Features
 - Caching
