@@ -1,15 +1,15 @@
-﻿namespace FluentFramework.Tests
+﻿using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
+
+namespace FluentFramework.Tests
 {
     public class DefaultConnection : IConnectionDescriptive
     {
-        public string GetConnectionString()
+        public FluentConfiguration Configuration(FluentConfiguration cfg, bool useSecondLevelCache, bool useQueryCache, out bool useDefaultCachingMechanism, out bool autoCreateDatabase)
         {
-            return "Data Source=Database.db; Version=3;";
-        }
-
-        public ConnectionProvider GetProvider()
-        {
-            return ConnectionProvider.SQLITE;
+            autoCreateDatabase = true;
+            useDefaultCachingMechanism = true;
+            return cfg.Database(SQLiteConfiguration.Standard.ConnectionString("Data Source=Database.db;Version=3;"));
         }
     }
 }

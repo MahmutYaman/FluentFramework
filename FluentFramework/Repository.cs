@@ -1,9 +1,7 @@
 ﻿using FluentFramework.Database.Conventions;
 using FluentFramework.Listeners;
 using FluentFramework.Types;
-using FluentNHibernate;
 using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Context;
@@ -18,10 +16,10 @@ using System.Threading.Tasks;
 
 namespace FluentFramework
 {
-    public class Repository<ConnectionDescriptive> where ConnectionDescriptive : IConnectionDescriptive
+    public class Repository<ConnectionDescriptive> : IDisposable where ConnectionDescriptive : IConnectionDescriptive
     {
         private static readonly Dictionary<string, ISessionFactory> _sessionFactories = new Dictionary<string, ISessionFactory>();
-        private readonly ISession _session;
+        private ISession _session;
         internal Repository(ISession session)
             => _session = session;
 
@@ -31,48 +29,32 @@ namespace FluentFramework
         /// </summary>
         /// <typeparam name="ConnectionDescriptive">Database connection descriptive for an entity group.</typeparam>
         /// <param name="useSecondLevelCache">The second level cache is responsible for caching objects across sessions. When this is turned on, objects will first be searched in the cache and if they are not found, a database query will be fired.</param>
-        /// <param name="useQueryCache">Query Cache is used to cache the results of a query. When the query cache is turned on, the results of the query are stored against the combination query and parameters. Every time the query is fired the cache manager  checks for the combination of parameters and query. If the results are found in the cache, they are returned, otherwise a database transaction is initiated.  As you can see, it is not a good idea to cache a query if it has a number of parameters, because then a single parameter can take a number of values. For each of these combinations the results are stored in the memory. This  can lead to extensive memory usage.</param>
+        /// <param name="useQueryCache">Query Cache is used to cache the results of a query. When the query cache is turned on, the results of the query are stored against the combination query and parameters. Every time the query is fired the cache manager checks for the combination of parameters and query. If the results are found in the cache, they are returned, otherwise a database transaction is initiated.  As you can see, it is not a good idea to cache a query if it has a number of parameters, because then a single parameter can take a number of values. For each of these combinations the results are stored in the memory. This  can lead to extensive memory usage.</param>
         public static Repository<ConnectionDescriptive> CreateRepository(bool useSecondLevelCache = false, bool useQueryCache = false)
         {
             var connection = Activator.CreateInstance<ConnectionDescriptive>();
-            var connectionString = connection.GetConnectionString();
-            var provider = connection.GetProvider();
-
-            _sessionFactories.TryGetValue(connectionString + provider + useSecondLevelCache + useQueryCache, out ISessionFactory sessionFactory);
+            var sessionFactoryKey = connection.GetType().FullName + useSecondLevelCache + useQueryCache;
+            
+            _sessionFactories.TryGetValue(sessionFactoryKey, out ISessionFactory sessionFactory);
             if (sessionFactory is null)
             {
-                sessionFactory = Fluently.Configure().Database(() =>
-                {
-                    switch (provider)
-                    {
-                        case ConnectionProvider.MSSQL2012:
-                            return MsSqlConfiguration.MsSql2012.ConnectionString(connectionString);
-                        case ConnectionProvider.MSSQL2008:
-                            return MsSqlConfiguration.MsSql2008.ConnectionString(connectionString);
-                        case ConnectionProvider.SQLCE:
-                            return MsSqlCeConfiguration.Standard.ConnectionString(connectionString);
-                        case ConnectionProvider.SQLITE:
-                            return SQLiteConfiguration.Standard.ConnectionString(connectionString);
-                        case ConnectionProvider.MYSQL:
-                            return MySQLConfiguration.Standard.ConnectionString(connectionString);
-                        case ConnectionProvider.POSTGRESQL:
-                            return PostgreSQLConfiguration.Standard.ConnectionString(connectionString);
-                        default:
-                            throw new ArgumentNullException(nameof(provider));
-                    }
-                })
+                sessionFactory = connection.Configuration(
+                    Fluently.Configure(),
+                    useSecondLevelCache,
+                    useQueryCache,
+                    out bool useDefaultCachingMechanism,
+                    out bool autoCreateDatabase)
                 .Mappings(mapping =>
                 {
                     mapping.FluentMappings.Conventions.AddFromAssemblyOf<TableNameConvention>();
 
                     var entityMapType = typeof(EntityMap<,>);
                     var connectionType = connection.GetType();
-
                     foreach (var entityMap in AppDomain.CurrentDomain.GetAssemblies()
                                                 .Where(a => !a.GlobalAssemblyCache)
                                                 .SelectMany(a => a.GetTypes()
-                                                    .Where(t => t.BaseType?.IsGenericType == true && 
-                                                                t.BaseType.GetGenericTypeDefinition() == entityMapType && 
+                                                    .Where(t => t.BaseType?.IsGenericType == true &&
+                                                                t.BaseType.GetGenericTypeDefinition() == entityMapType &&
                                                                 t.BaseType.GenericTypeArguments.Any(arg => connectionType.IsAssignableFrom(arg)))
                                                     .Distinct()))
                         mapping.FluentMappings.Add(entityMap);
@@ -83,32 +65,36 @@ namespace FluentFramework
                     cfg.AppendListeners(ListenerType.PreUpdate, new[] { new PreUpdateListener<ConnectionDescriptive>() });
                     cfg.AppendListeners(ListenerType.PreDelete, new[] { new PreDeleteListener<ConnectionDescriptive>() });
 
-                    try
+                    if (autoCreateDatabase)
                     {
-                        new SchemaValidator(cfg).Validate();
-                    }
-                    catch
-                    {
-                        new SchemaUpdate(cfg).Execute(false, true);
+                        try
+                        {
+                            new SchemaValidator(cfg).Validate();
+                        }
+                        catch
+                        {
+                            new SchemaUpdate(cfg).Execute(false, true);
+                        }
                     }
                 })
                 .Cache(caching =>
                 {
-                    if (useSecondLevelCache)
-                        caching.UseSecondLevelCache().UseMinimalPuts();
-                    if (useQueryCache)
-                        caching.UseQueryCache().QueryCacheFactory<StandardQueryCacheFactory>();
+                    if (useDefaultCachingMechanism)
+                    {
+                        if (useSecondLevelCache)
+                            caching.UseSecondLevelCache().UseMinimalPuts();
+                        if (useQueryCache)
+                            caching.UseQueryCache().QueryCacheFactory<StandardQueryCacheFactory>();
+                    }
                 })
-                .CurrentSessionContext<ThreadLocalSessionContext>()
                 .BuildSessionFactory();
-                _sessionFactories.Add(connectionString + provider + useSecondLevelCache + useQueryCache, sessionFactory);
-            }
 
+                _sessionFactories.Add(sessionFactoryKey, sessionFactory);
+            }
             var session = sessionFactory.OpenSession();
             session.FlushMode = FlushMode.Manual;
             return new Repository<ConnectionDescriptive>(session);
         }
-
 
         private Transaction _transaction;
         public Transaction Transaction
@@ -159,5 +145,24 @@ namespace FluentFramework
 
         public async Task SaveChangesAsync()
             => await _session.FlushAsync();
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_session != null && _session.IsOpen)
+                {
+                    _session.Close();
+                    _session.Dispose();
+                    _session = null;
+                }
+            }
+        }
     }
 }
