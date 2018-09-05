@@ -9,45 +9,51 @@ namespace FluentFramework.Tests
     [TestClass]
     public class Tests
     {
-        public Repository<DefaultConnection> CreateRepository()
+        Repository<DefaultConnection> repository;
+        public Tests()
         {
-            return Repository<DefaultConnection>.CreateRepository();
+            repository = Repository<DefaultConnection>.CreateRepository();
         }
 
         [TestMethod]
-        public void CreateEntities()
+        public void Transactions()
         {
-            var repository = CreateRepository();
+            var guid = Guid.NewGuid().ToString();
             repository.Transaction.Begin();
 
             var user = new User
             {
-                Username = "User_" + Guid.NewGuid().ToString(),
+                Username = "User_" + guid,
                 Password = CryptoHelper.HashPassword("123456")
             };
             user.Details.Add("Bio", "A simple person.");
 
             repository.Add(user);
-            repository.Add(new Book { Name = "Book name", User = user });
-
-            repository.Transaction.Commit();
+            repository.Add(new Book { Name = "Book_" + guid, User = user });
             repository.SaveChanges();
+
+            repository.Transaction.Rollback();
+
+            var result = repository.Query<User>().Where(x => x.Username == "User_" + guid).SingleOrDefault();
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void GetUser()
+        public void Query()
         {
-            var repository = CreateRepository();
-            var user = repository.Query<User>().ToList().Where(x => x.Details.ContainsKey("Bio")).First();
-            Assert.IsNotNull(user, "No user found.");
-        }
+            var guid = Guid.NewGuid().ToString();
 
-        [TestMethod]
-        public void VerifyUserPassword()
-        {
-            var repository = CreateRepository();
-            var verified = CryptoHelper.VerifyHashedPassword(repository.Query<User>().First().Password, "123456");
-            Assert.IsTrue(verified, "Password does not match.");
+            repository.Add(new User
+            {
+                Username = "User_" + guid,
+                Password = CryptoHelper.HashPassword("123456")
+            });
+
+            var result = repository.Query<User>().SingleOrDefault(x => x.Username == "User_" + guid);
+            Assert.IsNotNull(result);
+
+            var passwordVerified = CryptoHelper.VerifyHashedPassword(result.Password, "123456");
+            Assert.IsTrue(passwordVerified);
         }
     }
 }

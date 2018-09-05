@@ -32,6 +32,7 @@ namespace FluentFramework.Tests.Entities
         public UserMap()
         {
             Where("SoftDeleted=0");
+            Map(x => x.SoftDeleted).Nullable();
             Map(x => x.Username).Not.Nullable().Unique().Index("idx_username");
             Map(x => x.Password).Not.Nullable();
             Map(x => x.Details).CustomType<Serialized<Dictionary<string, string>>>().Nullable();

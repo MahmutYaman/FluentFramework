@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net471</TargetFrameworks>
+    <PackageLicenseUrl>https://github.com/MahmutYaman/FluentFramework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/MahmutYaman/FluentFramework</PackageProjectUrl>
+    <Copyright>Copyright (c) 2018 Mahmut Yaman</Copyright>
+    <Company>Mahmut Yaman</Company>
+    <Authors>Mahmut Yaman</Authors>
+    <Description>FluentFramework is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
+    <PackageTags>ORM, DAL, NHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.1|AnyCPU'">
