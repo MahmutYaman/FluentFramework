@@ -1,7 +1,7 @@
 ## Implementation
  1. Create an implementation as like below and configure your connection.
 ```
- public class DefaultConnection : IConnectionDescriptive
+public class DefaultConnection : IConnectionDescriptive
 {
     public FluentConfiguration Configuration(FluentConfiguration cfg, bool useSecondLevelCache, bool useQueryCache, out bool useDefaultCachingMechanism, out bool autoCreateDatabase)
     {
