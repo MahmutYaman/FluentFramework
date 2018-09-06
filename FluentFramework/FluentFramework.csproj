@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net471</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <PackageLicenseUrl>https://github.com/MahmutYaman/FluentFramework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/MahmutYaman/FluentFramework</PackageProjectUrl>
     <Copyright>Copyright (c) 2018 Mahmut Yaman</Copyright>
@@ -12,14 +12,14 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.1|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
     <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CG.Pluralization" Version="0.3000.12" />
     <PackageReference Include="FluentNHibernate" Version="2.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Pluralize.NET.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

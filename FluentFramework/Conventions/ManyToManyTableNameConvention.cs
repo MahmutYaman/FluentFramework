@@ -1,13 +1,14 @@
 ﻿using FluentNHibernate.Conventions.Inspections;
-using Pluralize.NET.Core;
+using System.Data.Entity.Design.PluralizationServices;
+using System.Globalization;
 
 namespace FluentFramework.Conventions
 {
     internal class ManyToManyTableNameConvention : FluentNHibernate.Conventions.ManyToManyTableNameConvention
     {
-        private readonly Pluralizer pluralizer;
+        private readonly PluralizationService pluralizer;
         public ManyToManyTableNameConvention()
-            => pluralizer = new Pluralizer();
+            => pluralizer = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-US"));
 
         protected override string GetBiDirectionalTableName(IManyToManyCollectionInspector collection, IManyToManyCollectionInspector otherSide)
             => pluralizer.Pluralize(collection.EntityType.Name) + pluralizer.Pluralize(otherSide.EntityType.Name);
