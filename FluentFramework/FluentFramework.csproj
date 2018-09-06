@@ -10,6 +10,7 @@
     <Description>FluentFramework is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
     <PackageTags>ORM, DAL, NHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
