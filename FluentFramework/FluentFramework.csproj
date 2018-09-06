@@ -7,8 +7,8 @@
     <Copyright>Copyright (c) 2018 Mahmut Yaman</Copyright>
     <Company>Mahmut Yaman</Company>
     <Authors>Mahmut Yaman</Authors>
-    <Description>FluentFramework is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
-    <PackageTags>ORM, DAL, NHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
+    <Description>FluentFramework is a nHibernate based object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
+    <PackageTags>ORM, DAL, nHibernate, FluentNHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>1.1.0</Version>
   </PropertyGroup>
