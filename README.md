@@ -1,5 +1,5 @@
 ## Implementation
- 1. Create an implementation as like below and configure your connection.
+ 1. Create an implementation as like below and configure your connection. You can use different database connections instead of SQLite of course! Others are in FluentNHibernate.Cfg.Db namespace. Also you can expand and improve your FluentNHibernate configurations on here.
 ```
 public class DefaultConnection : IConnectionDescriptive
 {
