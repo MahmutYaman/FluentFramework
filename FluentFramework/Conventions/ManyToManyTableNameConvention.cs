@@ -7,6 +7,7 @@ namespace FluentFramework.Conventions
     internal class ManyToManyTableNameConvention : FluentNHibernate.Conventions.ManyToManyTableNameConvention
     {
         private readonly PluralizationService pluralizer;
+
         public ManyToManyTableNameConvention()
             => pluralizer = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-US"));
 

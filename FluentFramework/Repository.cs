@@ -4,7 +4,6 @@ using FluentFramework.Types;
 using FluentNHibernate.Cfg;
 using NHibernate;
 using NHibernate.Cache;
-using NHibernate.Context;
 using NHibernate.Event;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
@@ -20,9 +19,9 @@ namespace FluentFramework
     {
         private static readonly Dictionary<string, ISessionFactory> _sessionFactories = new Dictionary<string, ISessionFactory>();
         private ISession _session;
+
         internal Repository(ISession session)
             => _session = session;
-
 
         /// <summary>
         /// Creates a repository which is connects to the specified connection for an entity group.
@@ -34,7 +33,7 @@ namespace FluentFramework
         {
             var connection = Activator.CreateInstance<ConnectionDescriptive>();
             var sessionFactoryKey = connection.GetType().FullName + useSecondLevelCache + useQueryCache;
-            
+
             _sessionFactories.TryGetValue(sessionFactoryKey, out ISessionFactory sessionFactory);
             if (sessionFactory is null)
             {
@@ -97,13 +96,12 @@ namespace FluentFramework
         }
 
         private Transaction _transaction;
+
         public Transaction Transaction
             => _transaction ?? (_transaction = new Transaction(_session));
 
-
         public IQueryable<T> Query<T>() where T : Entity<ConnectionDescriptive>
             => _session.Query<T>();
-
 
         public T Get<T>(long id) where T : Entity<ConnectionDescriptive>
             => _session.Query<T>().SingleOrDefault(x => x.Id == id);
@@ -111,13 +109,11 @@ namespace FluentFramework
         public async Task<T> GetAsync<T>(long id, CancellationToken cancellationToken = default(CancellationToken)) where T : Entity<ConnectionDescriptive>
             => await _session.Query<T>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-
         public T Single<T>() where T : Entity<ConnectionDescriptive>
             => _session.Query<T>().SingleOrDefault();
 
         public async Task<T> SingleAsync<T>(CancellationToken cancellationToken = default(CancellationToken)) where T : Entity<ConnectionDescriptive>
             => await _session.Query<T>().SingleOrDefaultAsync(cancellationToken);
-
 
         public long Add(Entity<ConnectionDescriptive> entity)
             => (long)_session.Save(entity);
@@ -125,20 +121,17 @@ namespace FluentFramework
         public async Task<long> AddAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
             => (long)await _session.SaveAsync(entity, cancellationToken);
 
-
         public void Update(Entity<ConnectionDescriptive> entity)
             => _session.Update(entity);
 
         public async Task UpdateAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
             => await _session.UpdateAsync(entity, cancellationToken);
 
-
         public void Delete(Entity<ConnectionDescriptive> entity)
             => _session.Delete(entity);
 
         public async Task DeleteAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
             => await _session.DeleteAsync(entity, cancellationToken);
-
 
         public void SaveChanges()
             => _session.Flush();

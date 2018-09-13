@@ -2,7 +2,7 @@
 
 namespace FluentFramework.Types
 {
-    public abstract class Entity<ConnectionDescriptive>: FluentNHibernate.Data.Entity where ConnectionDescriptive : IConnectionDescriptive
+    public abstract class Entity<ConnectionDescriptive> : FluentNHibernate.Data.Entity where ConnectionDescriptive : IConnectionDescriptive
     {
         public virtual void OnPreInsert(Repository<ConnectionDescriptive> repository, out bool vetoed)
             => vetoed = false;

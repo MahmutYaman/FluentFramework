@@ -4,7 +4,7 @@ namespace FluentFramework.Extensions
 {
     public static class EnumExtensions
     {
-        public static T Parse<T>(this Enum @enum, string value) 
+        public static T Parse<T>(this Enum @enum, string value)
             => (T)Enum.Parse(@enum.GetType(), value, true);
 
         public static T ToEnum<T>(this string value) where T : struct, IConvertible

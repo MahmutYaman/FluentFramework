@@ -1,5 +1,5 @@
-﻿using FluentNHibernate;
-using System;
+﻿using System;
+using FluentNHibernate;
 
 namespace FluentFramework.Database.Conventions
 {
