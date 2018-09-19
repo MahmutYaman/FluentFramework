@@ -14,7 +14,7 @@ namespace FluentFramework.Extensions
         public static async Task<PagedList<T>> ToPagedListAsync<T>(this IQueryable<T> items, int pageSize, int page)
         {
             var pageCount = (int)Math.Ceiling(await items.CountAsync() / (double)pageSize);
-            var skip = pageSize * page;
+            var skip = pageSize * (page - 1);
             return new PagedList<T>
             {
                 CurrentPage = page,
