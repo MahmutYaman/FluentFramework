@@ -104,40 +104,22 @@ namespace FluentFramework
             => _session.Query<T>();
 
         public T Get<T>(long id) where T : Entity<ConnectionDescriptive>
-            => _session.Query<T>().SingleOrDefault(x => x.Id == id);
+            => _session.Get<T>(id);
 
         public async Task<T> GetAsync<T>(long id, CancellationToken cancellationToken = default(CancellationToken)) where T : Entity<ConnectionDescriptive>
-            => await _session.Query<T>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
-
-        public T Single<T>() where T : Entity<ConnectionDescriptive>
-            => _session.Query<T>().SingleOrDefault();
-
-        public async Task<T> SingleAsync<T>(CancellationToken cancellationToken = default(CancellationToken)) where T : Entity<ConnectionDescriptive>
-            => await _session.Query<T>().SingleOrDefaultAsync(cancellationToken);
+            => await _session.GetAsync<T>(id, cancellationToken);
 
         public long Add(Entity<ConnectionDescriptive> entity)
             => (long)_session.Save(entity);
 
-        public async Task<long> AddAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
-            => (long)await _session.SaveAsync(entity, cancellationToken);
-
         public void Update(Entity<ConnectionDescriptive> entity)
             => _session.Update(entity);
-
-        public async Task UpdateAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
-            => await _session.UpdateAsync(entity, cancellationToken);
 
         public void Delete(Entity<ConnectionDescriptive> entity)
             => _session.Delete(entity);
 
-        public async Task DeleteAsync(Entity<ConnectionDescriptive> entity, CancellationToken cancellationToken = default(CancellationToken))
-            => await _session.DeleteAsync(entity, cancellationToken);
-
         public void SaveChanges()
             => _session.Flush();
-
-        public async Task SaveChangesAsync()
-            => await _session.FlushAsync();
 
         public void Dispose()
         {
