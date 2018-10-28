@@ -11,7 +11,7 @@ namespace FluentFramework.Listeners
         {
             if (@event.Entity is Entity<ConnectionDescriptive> entity)
             {
-                entity.OnPreUpdate(Repository<ConnectionDescriptive>.CreateRepository(false, false), out bool vetoed);
+                entity.OnPreUpdate(new Repository<ConnectionDescriptive>(@event.Session), out bool vetoed);
                 return vetoed;
             }
 
