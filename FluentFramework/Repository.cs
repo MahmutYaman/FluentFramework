@@ -5,7 +5,6 @@ using FluentNHibernate.Cfg;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Event;
-using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
 using System;
 using System.Collections.Generic;
@@ -18,10 +17,17 @@ namespace FluentFramework
     public class Repository<ConnectionDescriptive> : IDisposable where ConnectionDescriptive : IConnectionDescriptive
     {
         private static readonly Dictionary<string, ISessionFactory> _sessionFactories = new Dictionary<string, ISessionFactory>();
-        private ISession _session;
+        private readonly ISession _session;
+        private readonly string _sessionFactoryKey;
 
         internal Repository(ISession session)
             => _session = session;
+
+        internal Repository(ISession session, string sessionFactoryKey)
+        {
+            _session = session;
+            _sessionFactoryKey = sessionFactoryKey;
+        }
 
         /// <summary>
         /// Creates a repository which is connects to the specified connection for an entity group.
@@ -92,7 +98,7 @@ namespace FluentFramework
             }
             var session = sessionFactory.OpenSession();
             session.FlushMode = FlushMode.Manual;
-            return new Repository<ConnectionDescriptive>(session);
+            return new Repository<ConnectionDescriptive>(session, sessionFactoryKey);
         }
 
         private Transaction _transaction;
@@ -131,11 +137,13 @@ namespace FluentFramework
         {
             if (disposing)
             {
+                if (_sessionFactoryKey != null && _sessionFactories.Any(x => x.Key == _sessionFactoryKey))
+                    _sessionFactories.Remove(_sessionFactoryKey);
+
                 if (_session != null && _session.IsOpen)
                 {
                     _session.Close();
                     _session.Dispose();
-                    _session = null;
                 }
             }
         }
