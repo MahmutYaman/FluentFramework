@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace FluentFramework.Listeners
 {
-    internal class PreUpdateListener<ConnectionDescriptive> : IPreUpdateEventListener where ConnectionDescriptive : IConnectionDescriptive
+    internal class PreUpdateListener<ConnectionConfigurer> : IPreUpdateEventListener where ConnectionConfigurer : IConnectionConfigurer, new()
     {
         public bool OnPreUpdate(PreUpdateEvent @event)
         {
-            if (@event.Entity is Entity<ConnectionDescriptive> entity)
+            if (@event.Entity is Entity<ConnectionConfigurer> entity)
             {
-                entity.OnPreUpdate(new Repository<ConnectionDescriptive>(@event.Session), out bool vetoed);
+                entity.OnPreUpdate(new Repository<ConnectionConfigurer>(@event.Session), out bool vetoed);
                 return vetoed;
             }
 

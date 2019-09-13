@@ -1,4 +1,5 @@
 ﻿using FluentFramework.Types;
+using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace FluentFramework.Tests.Entities
         public virtual string Username { get; set; }
         public virtual string Password { get; set; }
         public virtual Dictionary<string, string> Details { get; set; } = new Dictionary<string, string>();
-        public virtual ISet<Book> Books { get; set; }
+        public virtual ISet<Book> Books { get; set; } = new LinkedHashSet<Book>();
 
         public virtual DateTime CreatedOn { get; set; }
         public virtual bool SoftDeleted { get; set; }

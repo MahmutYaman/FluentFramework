@@ -10,9 +10,9 @@
     <Description>FluentFramework is a nHibernate based object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
     <PackageTags>ORM, DAL, nHibernate, FluentNHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.2.3</Version>
-    <AssemblyVersion>1.2.3.0</AssemblyVersion>
-    <FileVersion>1.2.2.0</FileVersion>
+    <Version>2.1.1</Version>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <FileVersion>1.2.4.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">

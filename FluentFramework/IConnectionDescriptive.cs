@@ -1,9 +1,10 @@
 ﻿using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 
 namespace FluentFramework
 {
-    public interface IConnectionDescriptive
+    public interface IConnectionConfigurer
     {
-        FluentConfiguration Configuration(FluentConfiguration cfg, bool useSecondLevelCache, bool useQueryCache, out bool useDefaultCachingMechanism, out bool autoCreateDatabase);
+        IPersistenceConfigurer Configuration();
     }
 }

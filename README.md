@@ -1,25 +1,53 @@
 ## Implementation
- 1. Create an implementation as like below and configure your connection. You can use different database connections instead of SQLite of course! Others are in FluentNHibernate.Cfg.Db namespace. Also you can expand and improve your FluentNHibernate configurations on here.
+ 1. Create an implementation as like below and configure your connection. You can use different database connections instead of SQLite of course! Others are in FluentNHibernate.Cfg.Db namespace.
 ```
-public class DefaultConnection : IConnectionDescriptive
+public class DefaultConnection : IConnectionConfigurer
 {
-    public FluentConfiguration Configuration(FluentConfiguration cfg, bool useSecondLevelCache, bool useQueryCache, out bool useDefaultCachingMechanism, out bool autoCreateDatabase)
+    public IPersistenceConfigurer Configuration()
     {
-        autoCreateDatabase = true;
-        useDefaultCachingMechanism = true;
-        return cfg.Database(SQLiteConfiguration.Standard.ConnectionString("Data Source=Database.db;Version=3;"));
+        return SQLiteConfiguration.Standard.ConnectionString("Data Source=Database.db;Version=3;");
     }
 }
 ```
- 2. Create entities as like below;
+ 2. Adding configuration to service example.
+```
+public partial class App : Application
+{
+    public App()
+    {
+        ConnectionDescriptors.Add<DefaultConnection>(true, false, false);
+    }
+}
+```
+ 3. Entity example;
 ```
 public class Book : Entity<DefaultConnection>
 {
     public virtual string Name { get; set; }
     public virtual User User { get; set; }
+
+    public override void OnPreInsert(Repository<DefaultConnection> repository, out bool vetoed)
+    {
+        base.OnPreInsert(repository, out vetoed);
+
+        if (Name == "maybe a banned word check?")
+        {
+            vetoed = true;
+        }
+    }
+
+    public override void OnPreUpdate(Repository<DefaultConnection> repository, out bool vetoed)
+    {
+        base.OnPreUpdate(repository, out vetoed);
+    }
+
+    public override void OnPreDelete(Repository<DefaultConnection> repository, out bool vetoed)
+    {
+        base.OnPreDelete(repository, out vetoed);
+    }
 }
 ```
- 3. Map your entity as like below;
+ 4. Mapping example;
 ```
 public class BookMap : EntityMap<Book, DefaultConnection>
 {
@@ -30,27 +58,31 @@ public class BookMap : EntityMap<Book, DefaultConnection>
     }
 }
 ```
- 4. Get your database connection as like below;
+ 5. Query example;
 ```
 public User GetUser(string username)
 {
-    var repository = Repository<DefaultConnection>.CreateRepository();
-    return repository.Query<User>().Where(x => x.Username == username).SingleOrDefault()
+    using (var repository = new Repository<DefaultConnection>())
+    {
+        return repository.Query<User>().Where(x => x.Username == username).SingleOrDefault();
+    }
 }
 ```
- 5. You can also use transactions easy like below;
+ 6. Transaction example;
 ```
 public void AddBook(string bookName, User user)
 {
-    var repository = Repository<DefaultConnection>.CreateRepository();
-    repository.Transaction.Begin();
-    var book = new Book { Name = bookName, User = user };
-    repository.Add(book);
-    repository.SaveChanges();
-    
-    if(!doSomethingWithBook(book))
+    using (var repository = new Repository<DefaultConnection>())
     {
-        repository.Transaction.Rollback();
+        repository.Transaction.Begin();
+        var book = new Book { Name = bookName, User = user };
+        repository.Add(book);
+        repository.SaveChanges();
+    
+        if(!doSomethingWithBook(book))
+        {
+            repository.Transaction.Rollback();
+        }
     }
 }
 ```

@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace FluentFramework.Listeners
 {
-    internal class PreDeleteListener<ConnectionDescriptive> : IPreDeleteEventListener where ConnectionDescriptive : IConnectionDescriptive
+    internal class PreDeleteListener<ConnectionConfigurer> : IPreDeleteEventListener where ConnectionConfigurer : IConnectionConfigurer, new()
     {
         public bool OnPreDelete(PreDeleteEvent @event)
         {
-            if (@event.Entity is Entity<ConnectionDescriptive> entity)
+            if (@event.Entity is Entity<ConnectionConfigurer> entity)
             {
-                entity.OnPreDelete(new Repository<ConnectionDescriptive>(@event.Session), out bool vetoed);
+                entity.OnPreDelete(new Repository<ConnectionConfigurer>(@event.Session), out bool vetoed);
                 return vetoed;
             }
 

@@ -2,19 +2,19 @@
 
 namespace FluentFramework.Types
 {
-    public abstract class Entity<ConnectionDescriptive> : FluentNHibernate.Data.Entity where ConnectionDescriptive : IConnectionDescriptive
+    public abstract class Entity<ConnectionConfigurer> : FluentNHibernate.Data.Entity where ConnectionConfigurer : IConnectionConfigurer, new()
     {
-        public virtual void OnPreInsert(Repository<ConnectionDescriptive> repository, out bool vetoed)
+        public virtual void OnPreInsert(Repository<ConnectionConfigurer> repository, out bool vetoed)
             => vetoed = false;
 
-        public virtual void OnPreUpdate(Repository<ConnectionDescriptive> repository, out bool vetoed)
+        public virtual void OnPreUpdate(Repository<ConnectionConfigurer> repository, out bool vetoed)
             => vetoed = false;
 
-        public virtual void OnPreDelete(Repository<ConnectionDescriptive> repository, out bool vetoed)
+        public virtual void OnPreDelete(Repository<ConnectionConfigurer> repository, out bool vetoed)
             => vetoed = false;
     }
 
-    public abstract class EntityMap<T, ConnectionDescriptive> : ClassMap<T> where T : FluentNHibernate.Data.Entity where ConnectionDescriptive : IConnectionDescriptive
+    public abstract class EntityMap<T, ConnectionConfigurer> : ClassMap<T> where T : FluentNHibernate.Data.Entity where ConnectionConfigurer : IConnectionConfigurer, new()
     {
         public EntityMap()
             => Id(x => x.Id).GeneratedBy.Native();
