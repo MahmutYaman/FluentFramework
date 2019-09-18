@@ -7,6 +7,8 @@ namespace FluentFramework.Observing.Types
     {
         public virtual event PropertyChangedEventHandler PropertyChanged;
 
+        public static ObservableRepository<ObservableEntity<ConnectionConfigurer>, ConnectionConfigurer> ObservableRepository => ObservableRepository<ObservableEntity<ConnectionConfigurer>, ConnectionConfigurer>.Instance;
+
         public virtual void OnPreInsert<ObservableEntity, _ConnectionConfigurer>(ObservableRepository<ObservableEntity, _ConnectionConfigurer> observableRepository, out bool vetoed)
             where ObservableEntity : ObservableEntity<_ConnectionConfigurer>
             where _ConnectionConfigurer : IConnectionConfigurer, new()
