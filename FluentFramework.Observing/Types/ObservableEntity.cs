@@ -5,7 +5,9 @@ namespace FluentFramework.Observing.Types
 {
     public abstract class ObservableEntity<ConnectionConfigurer> : Entity, INotifyPropertyChanged where ConnectionConfigurer : IConnectionConfigurer, new()
     {
+#pragma warning disable CS0067 // The event 'ObservableEntity<ConnectionConfigurer>.PropertyChanged' is never used
         public virtual event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0067 // The event 'ObservableEntity<ConnectionConfigurer>.PropertyChanged' is never used
 
         public static ObservableRepository<ObservableEntity<ConnectionConfigurer>, ConnectionConfigurer> ObservableRepository => ObservableRepository<ObservableEntity<ConnectionConfigurer>, ConnectionConfigurer>.Instance;
 
