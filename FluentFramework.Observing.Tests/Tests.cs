@@ -20,15 +20,36 @@ namespace FluentFramework.Observing.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            ObservableRepository<Book>.Instance.Add(new Book
+            var books = ObservableRepository<Book>.Instance;
+            books.Add(new Book
             {
                 Name = "Book",
             });
 
-            ObservableRepository<User>.Instance.Add(new User
+            var users = ObservableRepository<User>.Instance;
+            users.CollectionChanged += Instance_CollectionChanged;
+            users.Add(new User
             {
                 Name = "User",
             });
+            Assert.IsTrue(collectionChanged);
+
+            users.ItemPropertyChanged += Instance_ItemPropertyChanged;
+
+            users[0].Name = "Changed User";
+            Assert.IsTrue(propertyChanged);
+        }
+
+        bool collectionChanged = false;
+        private void Instance_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            collectionChanged = true;
+        }
+
+        bool propertyChanged = false;
+        private void Instance_ItemPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            propertyChanged = true;
         }
     }
 }
