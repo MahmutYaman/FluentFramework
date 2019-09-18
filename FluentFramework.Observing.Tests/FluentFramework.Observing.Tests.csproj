@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F348BAB5-8D43-4121-B898-167060BA4DE6}</ProjectGuid>
+    <ProjectGuid>{3389A26F-77AF-40F6-BE0B-03C149C9A7BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FluentFramework.Tests</RootNamespace>
-    <AssemblyName>FluentFramework.Tests</AssemblyName>
+    <RootNamespace>FluentFramework.Observing.Tests</RootNamespace>
+    <AssemblyName>FluentFramework.Observing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -20,7 +20,6 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,16 +76,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultConnection.cs" />
-    <Compile Include="Entities\Book.cs" />
     <Compile Include="Entities\User.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="Entities\Book.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FluentFramework.Observing\FluentFramework.Observing.csproj">
+      <Project>{a706786c-4d24-464d-9211-6cec95788cf9}</Project>
+      <Name>FluentFramework.Observing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FluentFramework\FluentFramework.csproj">
       <Project>{a9c90f6e-592d-4424-bfdb-b1f598ba63d2}</Project>
       <Name>FluentFramework</Name>

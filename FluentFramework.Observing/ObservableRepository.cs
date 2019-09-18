@@ -4,24 +4,25 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace FluentFramework.Observing
 {
-    public sealed class ObservableRepository<ObservableEntity, ConnectionConfigurer> : ObservableCollection<ObservableEntity>, IDisposable where ObservableEntity : ObservableEntity<ConnectionConfigurer> where ConnectionConfigurer : IConnectionConfigurer, new()
+    public sealed class ObservableRepository<ObservableEntity> : ObservableCollection<ObservableEntity>, IDisposable where ObservableEntity : IObservableEntity, new()
     {
-        private static readonly Lazy<ObservableRepository<ObservableEntity, ConnectionConfigurer>> _instance = new Lazy<ObservableRepository<ObservableEntity, ConnectionConfigurer>>(() => new ObservableRepository<ObservableEntity, ConnectionConfigurer>());
-        public static ObservableRepository<ObservableEntity, ConnectionConfigurer> Instance => _instance.Value;
+        private static readonly Lazy<ObservableRepository<ObservableEntity>> _instance = new Lazy<ObservableRepository<ObservableEntity>>(() => new ObservableRepository<ObservableEntity>());
+        public static ObservableRepository<ObservableEntity> Instance => _instance.Value;
 
 
         private readonly ISession _session;
         private ObservableRepository()
         {
-            var sessionFactory = ConnectionDescriptors.GetSessionFactory<ConnectionConfigurer>();
+            var connectionConfigurerInterface = typeof(IConnectionConfigurer);
+            var connectionConfigurer = typeof(ObservableEntity).BaseType.GenericTypeArguments.Where(x => connectionConfigurerInterface.IsAssignableFrom(x)).First();
+            var sessionFactory = (ISessionFactory)typeof(ConnectionDescriptors).GetMethod("GetSessionFactory", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(connectionConfigurer).Invoke(null, null);
             if (sessionFactory is null)
-            {
                 throw new ArgumentException("Settings for this connection is not defined. Use ConnectionDescriptors.Add().", "ConnectionConfigurer");
-            }
 
             _session = sessionFactory.OpenSession();
             _session.FlushMode = FlushMode.Manual;
