@@ -8,7 +8,7 @@ namespace FluentFramework.Extensions
 {
     public static class PagingExtensions
     {
-        public static PagedList<T> ToPagedList<T>(this IEnumerable<T> items, int pageSize, int page) 
+        public static PagedList<T> ToPagedList<T>(this IEnumerable<T> items, int pageSize, int page)
             => items.AsQueryable().ToPagedListAsync(page, page).Result;
 
         public static async Task<PagedList<T>> ToPagedListAsync<T>(this IQueryable<T> items, int pageSize, int page)

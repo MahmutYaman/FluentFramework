@@ -16,7 +16,7 @@ namespace FluentFramework
     {
         private static readonly Dictionary<string, ISessionFactory> _sessionFactories = new Dictionary<string, ISessionFactory>();
 
-        internal static ISessionFactory GetSessionFactory<ConnectionConfigurer>()
+        public static ISessionFactory GetSessionFactory<ConnectionConfigurer>()
             => _sessionFactories.Where(x => x.Key == typeof(ConnectionConfigurer).FullName).Select(x => x.Value).SingleOrDefault();
 
         public static bool Exists<ConnectionConfigurer>() where ConnectionConfigurer : IConnectionConfigurer, new()

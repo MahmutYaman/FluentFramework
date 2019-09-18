@@ -1,13 +1,6 @@
-﻿using FluentFramework.Database.Conventions;
-using FluentFramework.Listeners;
-using FluentFramework.Types;
-using FluentNHibernate.Cfg;
+﻿using FluentFramework.Types;
 using NHibernate;
-using NHibernate.Cache;
-using NHibernate.Event;
-using NHibernate.Tool.hbm2ddl;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,9 +18,7 @@ namespace FluentFramework
         {
             var sessionFactory = ConnectionDescriptors.GetSessionFactory<ConnectionConfigurer>();
             if (sessionFactory is null)
-            {
                 throw new ArgumentException("Settings for this connection is not defined. Use ConnectionDescriptors.Add().", "ConnectionConfigurer");
-            }
 
             _session = sessionFactory.OpenSession();
             _session.FlushMode = FlushMode.Manual;
@@ -58,22 +49,28 @@ namespace FluentFramework
         public void SaveChanges()
             => _session.Flush();
 
+        #region Disposing
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_session != null && _session.IsOpen)
+                if (_session != null)
                 {
-                    _session.Close();
+                    if (_session.IsOpen)
+                        _session.Close();
+
                     _session.Dispose();
                 }
             }
         }
+
+        ~Repository() => Dispose(false);
+        #endregion
     }
 }

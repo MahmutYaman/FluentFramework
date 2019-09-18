@@ -3,15 +3,15 @@
     <TargetFrameworks>netcoreapp2.0;netstandard2.0;net461</TargetFrameworks>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/MahmutYaman/FluentFramework</PackageProjectUrl>
-    <Copyright>Copyright (c) 2018 Mahmut Yaman</Copyright>
+    <Copyright>Copyright (c) 2019 Mahmut Yaman</Copyright>
     <Company>Mahmut Yaman</Company>
     <Authors>Mahmut Yaman</Authors>
-    <Description>FluentFramework is a nHibernate based object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects.</Description>
-    <PackageTags>ORM, DAL, nHibernate, FluentNHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
+    <Description>FluentFramework.Observing is a helper tool to make database observing easy.</Description>
+    <PackageTags>Observing, FluentFramework, ORM, DAL, nHibernate, FluentNHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>2.1.4</Version>
-    <AssemblyVersion>2.1.4.0</AssemblyVersion>
-    <FileVersion>2.1.4.0</FileVersion>
+    <Version>1.1.1</Version>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -24,15 +24,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CG.Pluralization" Version="0.3000.12" />
-    <PackageReference Include="FluentNHibernate" Version="2.1.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentFramework" Version="2.1.4" />
   </ItemGroup>
 </Project>
