@@ -14,7 +14,6 @@ namespace FluentFramework.Observing
         private static readonly Lazy<ObservableRepository<ObservableEntity>> _instance = new Lazy<ObservableRepository<ObservableEntity>>(() => new ObservableRepository<ObservableEntity>());
         public static ObservableRepository<ObservableEntity> Instance => _instance.Value;
 
-
         private readonly ISession _session;
         private ObservableRepository()
         {
@@ -28,11 +27,9 @@ namespace FluentFramework.Observing
             _session.FlushMode = FlushMode.Manual;
             Transaction = new ObservableTransaction(_session);
 
-            var propertyChangedMethodInfo = GetType().GetMethod("OnItemPropertyChanged", BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (var item in _session.Query<ObservableEntity>())
             {
-                var eventInfo = item.GetType().GetEvent("PropertyChanged");
-                eventInfo.AddEventHandler(item, Delegate.CreateDelegate(eventInfo.EventHandlerType, this, propertyChangedMethodInfo));
+                ((INotifyPropertyChanged)item).PropertyChanged += OnItemPropertyChanged;
                 Add(item);
             }
         }

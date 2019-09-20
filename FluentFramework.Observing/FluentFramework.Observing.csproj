@@ -9,9 +9,9 @@
     <Description>FluentFramework.Observing is a helper tool to make database observing easy.</Description>
     <PackageTags>Observing, FluentFramework, ORM, DAL, nHibernate, FluentNHibernate, Database, Ado.NET, Mappings, ObjectRelationalMapping, Conventions</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.3</Version>
-    <AssemblyVersion>1.1.3.0</AssemblyVersion>
-    <FileVersion>1.1.3.0</FileVersion>
+    <Version>1.1.4</Version>
+    <AssemblyVersion>1.1.4.0</AssemblyVersion>
+    <FileVersion>1.1.4.0</FileVersion>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
