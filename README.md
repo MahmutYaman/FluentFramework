@@ -26,24 +26,19 @@ public class Book : Entity<DefaultConnection>
     public virtual string Name { get; set; }
     public virtual User User { get; set; }
 
-    public override void OnPreInsert(Repository<DefaultConnection> repository, out bool vetoed)
+    public override bool OnPreInsert()
     {
-        base.OnPreInsert(repository, out vetoed);
-
-        if (Name == "maybe a banned word check?")
-        {
-            vetoed = true;
-        }
+        return Name != "maybe a banned word check?"; //cancel
     }
 
-    public override void OnPreUpdate(Repository<DefaultConnection> repository, out bool vetoed)
+    public override bool OnPreUpdate()
     {
-        base.OnPreUpdate(repository, out vetoed);
+        return true;
     }
 
-    public override void OnPreDelete(Repository<DefaultConnection> repository, out bool vetoed)
+    public override bool OnPreDelete()
     {
-        base.OnPreDelete(repository, out vetoed);
+        return true;
     }
 }
 ```
