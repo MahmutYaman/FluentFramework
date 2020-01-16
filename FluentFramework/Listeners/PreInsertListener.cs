@@ -1,5 +1,8 @@
 ﻿using FluentFramework.Types;
 using NHibernate.Event;
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,10 +14,11 @@ namespace FluentFramework.Listeners
         {
             if (@event.Entity is Entity<ConnectionConfigurer> entity)
             {
-                entity.OnPreUpdate(new Repository<ConnectionConfigurer>(@event.Session), out bool vetoed);
-                return vetoed;
+                var persist = entity.OnPreInsert();
+                foreach (var propertyName in @event.Persister.PropertyNames)
+                    @event.State[Array.IndexOf(@event.Persister.PropertyNames, propertyName)] = @event.Entity.GetType().GetRuntimeProperties().SingleOrDefault(p => p.Name == propertyName)?.GetValue(@event.Entity);
+                return !persist;
             }
-
             return false;
         }
 
