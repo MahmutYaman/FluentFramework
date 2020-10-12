@@ -1,3 +1,6 @@
+## Donate Me
+BTC Wallet: 3DNnt9KCKcSqFpWw6g5yWPLAnbRqbB8cPR
+
 ## Implementation
  1. Create an implementation as like below and configure your connection. You can use different database connections instead of SQLite of course! Others are in FluentNHibernate.Cfg.Db namespace.
 ```
